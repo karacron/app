@@ -1,0 +1,62 @@
+{
+	"name": "desktop",
+	"version": "0.1.0",
+	"private": true,
+	"main": "main.js",
+	"scripts": {
+		"dev": "electron .",
+		"build": "node scripts/prepare-bundle.mjs",
+		"package": "npm run build && electron-builder --publish never",
+		"package:mac": "npm run build && electron-builder --mac dmg zip --publish never",
+		"package:win": "npm run build && electron-builder --win nsis --publish never",
+		"package:linux": "npm run build && electron-builder --linux AppImage --publish never",
+		"lint": "echo 'No lint configured for desktop yet'",
+		"check": "echo 'No checks configured for desktop yet'",
+		"clean": "node -e \"const fs=require('node:fs');['dist','release','web-dist','core-bin'].forEach((p)=>fs.rmSync(p,{recursive:true,force:true}));\""
+	},
+	"devDependencies": {
+		"electron": "^32.2.1",
+		"electron-builder": "^24.13.3"
+	},
+	"build": {
+		"appId": "com.kara.desktop",
+		"productName": "Kara",
+		"directories": {
+			"output": "release"
+		},
+		"files": [
+			"main.js",
+			"preload.js",
+			"renderer/**/*",
+			"web-dist/**/*",
+			"package.json"
+		],
+		"extraResources": [
+			{
+				"from": "core-bin",
+				"to": "core-bin",
+				"filter": [
+					"**/*"
+				]
+			}
+		],
+		"mac": {
+			"target": [
+				"dmg",
+				"zip"
+			],
+			"category": "public.app-category.productivity"
+		},
+		"win": {
+			"target": [
+				"nsis"
+			]
+		},
+		"linux": {
+			"target": [
+				"AppImage"
+			],
+			"category": "Utility"
+		}
+	}
+}

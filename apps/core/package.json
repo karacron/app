@@ -1,0 +1,12 @@
+{
+	"name": "core",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "go run main.go",
+		"build": "go build -o dist/kara-core ./...",
+		"lint": "go vet ./...",
+		"check": "go test ./...",
+		"clean": "rm -rf dist"
+	}
+}

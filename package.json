@@ -1,0 +1,47 @@
+{
+	"name": "karacron",
+	"version": "1.0.0",
+	"description": "> **Privacy without compromise.** A flexible AI assistant that puts you in control. Process data locally by default, connect from anywhere.",
+	"main": "index.js",
+	"directories": {
+		"doc": "docs"
+	},
+	"scripts": {
+		"dev": "turbo dev --ui=tui",
+		"build": "turbo build",
+		"lint": "turbo lint",
+		"check": "turbo check",
+		"clean": "turbo clean",
+		"release": "semantic-release",
+		"prepare": "husky",
+		"precommit": "npm run lint && npm run check"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/authuser-dev/karacron.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/authuser-dev/karacron/issues"
+	},
+	"homepage": "https://karacron.com",
+	"packageManager": "npm@10.9.2",
+	"private": true,
+	"workspaces": [
+		"apps/*"
+	],
+	"devDependencies": {
+		"@commitlint/cli": "^21.0.0",
+		"@commitlint/config-conventional": "^21.0.0",
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/commit-analyzer": "^11.1.0",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^10.3.5",
+		"@semantic-release/release-notes-generator": "^12.1.0",
+		"husky": "^9.1.7",
+		"semantic-release": "^24.2.7",
+		"turbo": "^2.9.12"
+	}
+}

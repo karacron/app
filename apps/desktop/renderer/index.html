@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Kara Desktop</title>
+		<style>
+			:root {
+				--bg: #f4f8f4;
+				--text: #10211b;
+				--accent: #0f766e;
+				--card: #ffffff;
+			}
+			body {
+				margin: 0;
+				font-family: "Segoe UI", "SF Pro Text", sans-serif;
+				background: radial-gradient(
+					circle at top left,
+					#d8f3dc,
+					var(--bg)
+				);
+				color: var(--text);
+			}
+			.wrap {
+				max-width: 860px;
+				margin: 56px auto;
+				padding: 24px;
+			}
+			.card {
+				background: var(--card);
+				border-radius: 16px;
+				box-shadow: 0 18px 48px rgba(16, 33, 27, 0.12);
+				padding: 28px;
+			}
+			h1 {
+				margin-top: 0;
+			}
+			code {
+				background: #e8f5ee;
+				padding: 2px 8px;
+				border-radius: 8px;
+			}
+			.badge {
+				display: inline-block;
+				margin-top: 8px;
+				background: #e5f7ef;
+				color: var(--accent);
+				border-radius: 999px;
+				padding: 6px 12px;
+				font-size: 13px;
+			}
+		</style>
+	</head>
+	<body>
+		<main class="wrap">
+			<section class="card">
+				<h1>Kara Desktop</h1>
+				<p>
+					This is your Electron shell for Kara. Production packages
+					load the embedded web app.
+				</p>
+				<p>Platform: <code id="platform">unknown</code></p>
+				<span class="badge" id="version">Version</span>
+			</section>
+		</main>
+
+		<script>
+			const platform = document.getElementById("platform");
+			const version = document.getElementById("version");
+			if (window.kara) {
+				platform.textContent = window.kara.platform;
+				version.textContent = `Desktop ${window.kara.version}`;
+			}
+		</script>
+	</body>
+</html>

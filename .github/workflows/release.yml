@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  quality:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Web
+        run: npm --workspace web run lint
+
+      - name: Lint Core
+        run: npm --workspace core run lint
+
+      - name: Check Web
+        run: npm --workspace web run check
+
+      - name: Check Core
+        run: npm --workspace core run check
+
+  semantic_release:
+    name: Semantic Release
+    needs: quality
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.semantic.outputs.new_release_published }}
+      tag: ${{ steps.semantic.outputs.new_release_git_tag }}
+      version: ${{ steps.semantic.outputs.new_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Version + Changelog + Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 24
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  installers:
+    name: Build Installers
+    needs: semantic_release
+    if: needs.semantic_release.outputs.released == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: mac
+            script: package:mac
+          - os: windows-latest
+            target: win
+            script: package:win
+          - os: ubuntu-latest
+            target: linux
+            script: package:linux
+    steps:
+      - name: Checkout Release Tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.semantic_release.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Web
+        run: npm --workspace web run build
+
+      - name: Build Core
+        run: npm --workspace core run build
+
+      - name: Build Electron Installer
+        run: npm --workspace desktop run ${{ matrix.script }} -- --config.extraMetadata.version=${{ needs.semantic_release.outputs.version }}
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.semantic_release.outputs.tag }}
+          files: |
+            apps/desktop/release/**/*.dmg
+            apps/desktop/release/**/*.zip
+            apps/desktop/release/**/*.exe
+            apps/desktop/release/**/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

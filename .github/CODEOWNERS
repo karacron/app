@@ -1,0 +1,13 @@
+# Global fallback
+
+- @authuser-dev/maintainers
+
+# App ownership
+
+/apps/web/ @authuser-dev/web-team
+/apps/core/ @authuser-dev/core-team
+/apps/desktop/ @authuser-dev/desktop-team
+
+# CI and release
+
+/.github/workflows/ @authuser-dev/devops-team

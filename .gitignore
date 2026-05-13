@@ -1,0 +1,20 @@
+node_modules/
+.npm/
+.DS_Store
+
+# Turbo
+.turbo/
+
+# Build outputs
+**/dist/
+**/.next/
+**/out/
+**/release/
+**/web-dist/
+**/core-bin/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
