@@ -124,7 +124,7 @@ jobs:
         run: npm --workspace desktop run ${{ matrix.script }} -- --config.extraMetadata.version=${{ needs.semantic_release.outputs.version }}
 
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.semantic_release.outputs.tag }}
           files: |
