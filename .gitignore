@@ -18,3 +18,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+apps/core/data/models/*
+apps/core/data/binaries/*
+apps/core/data/kara.db
