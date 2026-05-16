@@ -8,6 +8,8 @@
 	},
 	"scripts": {
 		"dev": "turbo dev --ui=tui",
+		"start": "npm run start:core",
+		"start:core": "npm run --workspace apps/core start",
 		"build": "turbo build",
 		"lint": "turbo lint",
 		"check": "turbo check",

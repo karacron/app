@@ -4,9 +4,11 @@
 	"private": true,
 	"scripts": {
 		"dev": "go run main.go",
+		"start": "go run main.go",
 		"build": "go build -o dist/kara-core ./...",
 		"lint": "go vet ./...",
 		"check": "go test ./...",
-		"clean": "rm -rf dist"
+		"clean": "rm -rf dist",
+		"deps": "go mod tidy && go mod download"
 	}
 }

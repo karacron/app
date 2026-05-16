@@ -1,0 +1,22 @@
+{
+  "models": [
+    {
+      "name": "Qwen3 (ligero)",
+      "model": "Qwen3-1.7B-GGUF",
+      "reference": "qwen3-1.7b-light",
+      "path": "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF"
+    },
+    {
+      "name": "Qwen3 (normal)",
+      "model": "Qwen3-4B-Instruct-GGUF",
+      "reference": "qwen3-4b-instruct",
+      "path": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF"
+    },
+    {
+      "name": "Qwen2.5 Coder",
+      "model": "Qwen2.5-Coder-7B-Instruct-GGUF",
+      "reference": "qwen2.5-coder-7b-instruct",
+      "path": "https://huggingface.co/itlwas/Qwen2.5-Coder-7B-Instruct-Q4_K_M-GGUF"
+    }
+  ]
+}
