@@ -1,4 +1,4 @@
-﻿package application
+package application
 
 import (
 	"encoding/json"
@@ -25,10 +25,10 @@ func NewUserPatchUseCase(db *sqlx.DB, logger *zap.Logger) *UserPatchUseCase {
 func (u *UserPatchUseCase) UserPatch(c fiber.Ctx) error {
 	var req domain.UpdateUserReq
 	if err := c.Bind().JSON(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON invÃ¡lido", "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON inválido", "status": 400})
 	}
 	if errs := middleware.ValidateRequest(&req); len(errs) > 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ValidaciÃ³n fallida", "validationErrors": errs, "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Validación fallida", "validationErrors": errs, "status": 400})
 	}
 
 	installID, err := dbmod.EnsureInstallation(u.DB)

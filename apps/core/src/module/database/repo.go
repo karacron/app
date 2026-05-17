@@ -1,4 +1,4 @@
-﻿package database
+package database
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 const defaultInstallationReference = "default"
 
-// GenID genera un ID Ãºnico basado en UUID v4.
+// GenID genera un ID único basado en UUID v4.
 func GenID() string {
 	return uuid.New().String()
 }
@@ -21,7 +21,7 @@ func NowISO() string {
 }
 
 // EnsureInstallation garantiza que exista la installation singleton 'default'.
-// Devuelve el id numÃ©rico de la installation.
+// Devuelve el id numérico de la installation.
 func EnsureInstallation(db *sqlx.DB) (int64, error) {
 	var id int64
 	_, err := db.Exec(

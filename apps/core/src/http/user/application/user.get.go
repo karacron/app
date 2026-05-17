@@ -1,13 +1,14 @@
-﻿package application
+package application
 
 import (
 	"context"
-	"github.com/authuser-dev/karacron/apps/core/src/http/user/domain"
-	dbmod "github.com/authuser-dev/karacron/apps/core/src/module/database"
-	"github.com/authuser-dev/karacron/apps/core/src/server/middleware"
 	"net"
 	"strings"
 	"time"
+
+	"github.com/authuser-dev/karacron/apps/core/src/http/user/domain"
+	dbmod "github.com/authuser-dev/karacron/apps/core/src/module/database"
+	"github.com/authuser-dev/karacron/apps/core/src/server/middleware"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/jmoiron/sqlx"
@@ -87,7 +88,7 @@ func (u *UserGetUseCase) GetMe(c fiber.Ctx) error {
 func (u *UserGetUseCase) ValidateEmail(c fiber.Ctx) error {
 	email := c.Query("email")
 	if email == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ParÃ¡metro email requerido", "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Parámetro email requerido", "status": 400})
 	}
 
 	errs := middleware.ValidateRequest(&domain.EmailReq{Email: email})

@@ -40,7 +40,7 @@ func main() {
 	cfg := config.Load()
 
 	// 3. INICIALIZAR LOGGER GLOBAL
-	console := logging.Log("server")
+	console := logging.Log("server", "info")
 	defer console.Sync()
 
 	if !hasDotEnv {
@@ -78,7 +78,7 @@ func main() {
 			console.Info("llama.cpp listo para inferencia local")
 		}()
 	}
- 
+
 	// 5. EJECUTAR MIGRACIONES
 	if err := database.RunMigrations(db, logging.Log("db")); err != nil {
 		console.Fatal("fallaron migraciones sqlite", zap.Error(err))
@@ -93,9 +93,6 @@ func main() {
 	if err := database.RunSeed(db, logging.Log("db")); err != nil {
 		console.Warn("seed sqlite fallido", zap.Error(err))
 	}
-
-	// 8. CREAR HUB DE WEBSOCKET
-	hub := websocket.NewHub(logging.Log("ws"))
 
 	// 9. CONFIGURAR SERVIDOR FIBER
 	// Crea la instancia principal del router HTTP con:
@@ -153,9 +150,7 @@ func main() {
 	assistant.Register(app, db)
 	user.Register(app, db)
 	system.Register(app)
-
-	// 14. REGISTRAR RUTAS WEBSOCKET
-	websocket.Register(app, hub, db)
+	websocket.Connection(app, logging.Log("socket"))
 
 	// 16. INICIAR SERVIDOR HTTP + MANEJO DE APAGADO LIMPIO
 	addr := ":" + cfg.Port

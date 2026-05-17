@@ -1,4 +1,4 @@
-﻿package application
+package application
 
 import (
 	dbmod "github.com/authuser-dev/karacron/apps/core/src/module/database"
@@ -26,7 +26,7 @@ func NewAssistantPatchUseCase(db *sqlx.DB, logger *zap.Logger) *AssistantPatchUs
 func (u *AssistantPatchUseCase) PatchConfig(c fiber.Ctx) error {
 	var req AssistantConfigInput
 	if err := c.Bind().JSON(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON invÃ¡lido", "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON inválido", "status": 400})
 	}
 
 	// Get installation ID (for future use when persisting config)
@@ -41,7 +41,7 @@ func (u *AssistantPatchUseCase) PatchConfig(c fiber.Ctx) error {
 		"assistantName":       req.AssistantName,
 		"activePersonalityId": req.ActivePersonalityId,
 		"activeToneId":        req.ActiveToneId,
-		"message":             "ConfiguraciÃ³n del asistente actualizada",
+		"message":             "Configuración del asistente actualizada",
 	})
 }
 

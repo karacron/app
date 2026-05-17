@@ -1,4 +1,4 @@
-﻿package application
+package application
 
 import (
 	"encoding/json"
@@ -13,47 +13,47 @@ import (
 )
 
 // UserPostUseCase es el equivalente cercano a un service/use-case en NestJS.
-// Recibe sus dependencias por composiciÃ³n y concentra la lÃ³gica del caso de uso.
+// Recibe sus dependencias por composición y concentra la lógica del caso de uso.
 type UserPostUseCase struct {
 	*domain.UserUseCase
 }
 
 // NewUserPostUseCase funciona como un constructor manual.
-// En Go no hay inyecciÃ³n de dependencias automÃ¡tica como en NestJS; se arma explÃ­citamente.
+// En Go no hay inyección de dependencias automática como en NestJS; se arma explícitamente.
 func NewUserPostUseCase(db *sqlx.DB, logger *zap.Logger) *UserPostUseCase {
 	return &UserPostUseCase{
 		UserUseCase: domain.NewUserUseCase(db, logger),
 	}
 }
 
-// UserPost ejecuta el flujo de creaciÃ³n del usuario.
-// Piensa en este mÃ©todo como el cuerpo de un service method llamado desde un controller.
+// UserPost ejecuta el flujo de creación del usuario.
+// Piensa en este método como el cuerpo de un service method llamado desde un controller.
 func (u *UserPostUseCase) UserPost(c fiber.Ctx) error {
 	var req domain.CreateUserReq
 	// 1. Parsear el body HTTP al DTO del dominio.
 	if err := c.Bind().JSON(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON invÃ¡lido", "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "JSON inválido", "status": 400})
 	}
 	// 2. Validar el DTO. Esto cumple un rol parecido a class-validator en NestJS.
 	if errs := middleware.ValidateRequest(&req); len(errs) > 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ValidaciÃ³n fallida", "validationErrors": errs, "status": 400})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Validación fallida", "validationErrors": errs, "status": 400})
 	}
 
-	// 3. Asegurar que exista la instalaciÃ³n base sobre la que se crearÃ¡ el usuario.
+	// 3. Asegurar que exista la instalación base sobre la que se creará el usuario.
 	installID, err := dbmod.EnsureInstallation(u.DB)
 	if err != nil {
 		u.Log.Error("EnsureInstallation", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
 
-	// 4. En esta versiÃ³n solo se permite un usuario por instalaciÃ³n.
+	// 4. En esta versión solo se permite un usuario por instalación.
 	var existing string
 	if u.DB.Get(&existing, `SELECT id FROM user_settings WHERE installation_id = ? LIMIT 1`, installID) == nil {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "Solo se permite un usuario activo en esta versiÃ³n", "status": 409})
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "Solo se permite un usuario activo en esta versión", "status": 409})
 	}
 
 	// 5. Normalizar valores opcionales antes de persistir.
-	// AquÃ­ se aplican defaults y aliases de campos para no delegar esa lÃ³gica al controller.
+	// Aquí se aplican defaults y aliases de campos para no delegar esa lógica al controller.
 	firstName := req.FirstName
 	if firstName == nil {
 		firstName = req.Name
@@ -105,7 +105,7 @@ func (u *UserPostUseCase) UserPost(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error(), "status": 400})
 	}
 
-	// 7. Reconsultar el registro creado y devolver la representaciÃ³n final al cliente.
+	// 7. Reconsultar el registro creado y devolver la representación final al cliente.
 	var row domain.UserSettingsRow
 	_ = u.DB.Get(&row, `SELECT * FROM user_settings WHERE id = ?`, id)
 	return c.Status(fiber.StatusCreated).JSON(row)

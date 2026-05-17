@@ -1,4 +1,4 @@
-﻿// Paquete applog: logger unificado con formato coloreado para toda la app.
+// Paquete applog: logger unificado con formato coloreado para toda la app.
 //
 // Formato de salida:
 //
@@ -7,7 +7,7 @@
 // Uso:
 //
 //	log := applog.New("health")
-//	log.Info("peticiÃ³n recibida", zap.String("ip", "127.0.0.1"))
+//	log.Info("petición recibida", zap.String("ip", "127.0.0.1"))
 //
 // Esto es un thin wrapper sobre go.uber.org/zap que configura el encoder
 // con colores ANSI y el formato deseado. El tipo devuelto es *zap.Logger,
@@ -24,7 +24,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// CÃ³digos de color ANSI.
+// Códigos de color ANSI.
 const (
 	ansiReset  = "\033[0m"
 	ansiBold   = "\033[1m"
@@ -43,7 +43,7 @@ func nameEnc(name string, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(ansiBold + "[" + name + "]" + ansiReset)
 }
 
-// levelEnc: DEBUGâ†’cyan  INFOâ†’verde  WARNâ†’amarillo  ERRORâ†’rojo
+// levelEnc: DEBUG->cyan  INFO->verde  WARN->amarillo  ERROR->rojo
 func levelEnc(l zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
 	var color, text string
 	switch l {

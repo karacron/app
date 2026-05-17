@@ -1,4 +1,4 @@
-﻿package middleware
+package middleware
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 const ansiReset = "\033[0m"
 
-// statusColor devuelve el cÃ³digo de status HTTP con color ANSI segÃºn su rango:
+// statusColor devuelve el código de status HTTP con color ANSI según su rango:
 // 2xx=verde, 3xx=cyan, 4xx=amarillo, 5xx=rojo
 func statusColor(code int) string {
 	s := fmt.Sprintf("%d", code)
@@ -26,7 +26,7 @@ func statusColor(code int) string {
 	}
 }
 
-// methodColor devuelve el mÃ©todo HTTP con color ANSI segÃºn su semÃ¡ntica:
+// methodColor devuelve el método HTTP con color ANSI según su semántica:
 // GET=verde, POST=azul, PUT=amarillo, PATCH=magenta, DELETE=rojo, HEAD/OPTIONS=gris
 func methodColor(method string) string {
 	switch method {
@@ -47,16 +47,16 @@ func methodColor(method string) string {
 	}
 }
 
-// HTTPLogger loguea cada peticiÃ³n HTTP con nuestro formato unificado.
+// HTTPLogger loguea cada petición HTTP con nuestro formato unificado.
 func HTTPLogger(log *zap.Logger) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		start := time.Now()
 		err := c.Next()
 		duration := time.Since(start)
 
-		// Cuando un handler retorna un error, el ErrorHandler aÃºn no ha ejecutado,
-		// por lo que c.Response().StatusCode() todavÃ­a es 200 (default).
-		// El status real viene del error en sÃ­.
+		// Cuando un handler retorna un error, el ErrorHandler aún no ha ejecutado,
+		// por lo que c.Response().StatusCode() todavía es 200 (default).
+		// El status real viene del error en sí.
 		status := c.Response().StatusCode()
 		if err != nil {
 			if e, ok := err.(*fiber.Error); ok {
@@ -75,11 +75,11 @@ func HTTPLogger(log *zap.Logger) fiber.Handler {
 	}
 }
 
-// formatLatency formatea una duraciÃ³n de forma legible.
-// < 1ms â†’ Âµs  |  < 1s â†’ ms  |  >= 1s â†’ s
+// formatLatency formatea una duración de forma legible.
+// < 1ms -> us  |  < 1s -> ms  |  >= 1s -> s
 func formatLatency(d time.Duration) string {
 	if d < time.Millisecond {
-		return fmt.Sprintf("%dÂµs", d.Microseconds())
+		return fmt.Sprintf("%dµs", d.Microseconds())
 	}
 	if d < time.Second {
 		return fmt.Sprintf("%.1fms", float64(d.Microseconds())/1000)

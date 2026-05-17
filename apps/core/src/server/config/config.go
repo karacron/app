@@ -1,10 +1,10 @@
-﻿// Paquete config: lee las variables de entorno y devuelve una struct tipada.
-// Equivalente al AppConfigService de NestJS â€” un Ãºnico lugar donde vive la config.
+// Paquete config: lee las variables de entorno y devuelve una struct tipada.
+// Equivalente al AppConfigService de NestJS - un único lugar donde vive la config.
 package config
 
 import "os"
 
-// Config contiene toda la configuraciÃ³n de la aplicaciÃ³n.
+// Config contiene toda la configuración de la aplicación.
 type Config struct {
 	Port              string
 	Env               string
@@ -52,9 +52,9 @@ func Load() *Config {
 	}
 }
 
-// getEnv es un helper privado (minÃºscula = no exportado fuera del paquete).
-// Si la variable de entorno 'key' existe y no estÃ¡ vacÃ­a la devuelve,
-// si no, devuelve el 'fallback'. Equivalente al patrÃ³n process.env.X ?? 'default'.
+// getEnv es un helper privado (minúscula = no exportado fuera del paquete).
+// Si la variable de entorno 'key' existe y no está vacía la devuelve,
+// si no, devuelve el 'fallback'. Equivalente al patrón process.env.X ?? 'default'.
 func getEnv(key, fallback string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
