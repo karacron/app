@@ -21,3 +21,5 @@ pnpm-debug.log*
 apps/core/data/models/*
 apps/core/data/binaries/*
 apps/core/data/kara.db
+apps/core/data/kara.db-shm
+apps/core/data/kara.db-wal
