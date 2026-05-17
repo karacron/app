@@ -264,6 +264,40 @@ func untarGz(src, dest string) error {
 			if err := out.Close(); err != nil {
 				return err
 			}
+		case tar.TypeSymlink:
+			if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+				return err
+			}
+
+			linkTarget := strings.TrimSpace(hdr.Linkname)
+			if linkTarget == "" {
+				return fmt.Errorf("enlace simbolico invalido: destino vacio para %s", hdr.Name)
+			}
+			if filepath.IsAbs(linkTarget) {
+				return fmt.Errorf("enlace simbolico invalido: destino absoluto %s", hdr.Linkname)
+			}
+
+			if err := os.Remove(target); err != nil && !os.IsNotExist(err) {
+				return err
+			}
+			if err := os.Symlink(linkTarget, target); err != nil {
+				return err
+			}
+		case tar.TypeLink:
+			hardlinkTarget := filepath.Join(filepath.Dir(target), hdr.Linkname)
+			hardlinkTarget = filepath.Clean(hardlinkTarget)
+			if !strings.HasPrefix(hardlinkTarget, filepath.Clean(dest)+string(os.PathSeparator)) {
+				return fmt.Errorf("hardlink invalido: %s -> %s", hdr.Name, hdr.Linkname)
+			}
+			if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+				return err
+			}
+			if err := os.Remove(target); err != nil && !os.IsNotExist(err) {
+				return err
+			}
+			if err := os.Link(hardlinkTarget, target); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -349,18 +383,39 @@ func validateExecutableRuntime(ctx context.Context, executablePath string) error
 		return err
 	}
 
-	runCtx, cancel := context.WithTimeout(ctx, 8*time.Second)
-	defer cancel()
+	var lastErr error
+	for attempt := 1; attempt <= 2; attempt++ {
+		runCtx, cancel := context.WithTimeout(ctx, 25*time.Second)
 
-	cmd := exec.CommandContext(runCtx, absPath, "--version")
-	cmd.Dir = filepath.Dir(absPath)
-	if out, err := cmd.CombinedOutput(); err != nil {
+		cmd := exec.CommandContext(runCtx, absPath, "--version")
+		cmd.Dir = filepath.Dir(absPath)
+		out, err := cmd.CombinedOutput()
+		cancel()
+
+		if err == nil {
+			return nil
+		}
+
 		trimmed := strings.TrimSpace(string(out))
 		if trimmed == "" {
 			trimmed = err.Error()
 		}
-		return fmt.Errorf("binario invalido: %s", trimmed)
+
+		if runCtx.Err() == context.DeadlineExceeded {
+			lastErr = fmt.Errorf("binario invalido: validacion excedio tiempo limite: %s", trimmed)
+		} else {
+			lastErr = fmt.Errorf("binario invalido: %s", trimmed)
+		}
+
+		if !strings.Contains(strings.ToLower(trimmed), "signal: killed") && runCtx.Err() != context.DeadlineExceeded {
+			return lastErr
+		}
+
+		time.Sleep(250 * time.Millisecond)
 	}
 
-	return nil
+	if lastErr == nil {
+		lastErr = fmt.Errorf("binario invalido")
+	}
+	return lastErr
 }
