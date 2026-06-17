@@ -15,7 +15,7 @@
 		"clean": "node -e \"const fs=require('node:fs');['dist','release','web-dist','core-bin'].forEach((p)=>fs.rmSync(p,{recursive:true,force:true}));\""
 	},
 	"devDependencies": {
-		"electron": "^32.2.1",
+		"electron": "^42.4.1",
 		"electron-builder": "^24.13.3"
 	},
 	"build": {
